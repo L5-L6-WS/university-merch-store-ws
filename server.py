@@ -1,80 +1,45 @@
-from flask import Flask, render_template, request, redirect, url_for, jsonify
+from flask import Flask, render_template, request, redirect, jsonify
 import sqlite3
-from datetime import datetime
 import os
 
 app = Flask(__name__)
 
-# Ensure database folder exists
-if not os.path.exists("db"):
-    os.makedirs("db")
-
-DATABASE = "db/amity_store.db"
-
-def get_db_connection():
-    conn = sqlite3.connect(DATABASE)
-    conn.row_factory = sqlite3.Row
-    return conn
-
-# Initialize database
+# -------------------- DATABASE SETUP --------------------
 def init_db():
-    conn = get_db_connection()
-    cur = conn.cursor()
-    cur.execute("""
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            phone TEXT UNIQUE NOT NULL,
-            password TEXT NOT NULL
-        )
-    """)
-    cur.execute("""
-        CREATE TABLE IF NOT EXISTS orders (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            user_phone TEXT NOT NULL,
-            product_name TEXT NOT NULL,
-            price INTEGER NOT NULL,
-            timestamp TEXT NOT NULL
-        )
-    """)
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    # Create users table
+    c.execute('''CREATE TABLE IF NOT EXISTS users (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    phone TEXT UNIQUE NOT NULL,
+                    password TEXT NOT NULL
+                )''')
+    # Create orders table
+    c.execute('''CREATE TABLE IF NOT EXISTS orders (
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
+                    user_phone TEXT NOT NULL,
+                    product TEXT NOT NULL,
+                    size TEXT,
+                    quantity INTEGER,
+                    status TEXT DEFAULT 'Placed'
+                )''')
     conn.commit()
     conn.close()
 
 init_db()
 
+# -------------------- ROUTES --------------------
 @app.route('/')
-def homepage():
-    return render_template('homepage.html')
+def home():
+    return render_template('index.html')
 
-@app.route('/signin', methods=['GET', 'POST'])
+@app.route('/signin')
 def signin():
-    if request.method == 'POST':
-        phone = request.form['phone']
-        password = request.form['password']
-        conn = get_db_connection()
-        cur = conn.cursor()
-        cur.execute("SELECT * FROM users WHERE phone = ?", (phone,))
-        user = cur.fetchone()
-        if user:
-            if user['password'] == password:
-                conn.close()
-                return redirect(url_for('homepage'))
-            else:
-                conn.close()
-                return "Incorrect password", 401
-        else:
-            cur.execute("INSERT INTO users (phone, password) VALUES (?, ?)", (phone, password))
-            conn.commit()
-            conn.close()
-            return redirect(url_for('homepage'))
     return render_template('signin.html')
 
 @app.route('/products')
 def products():
-    return render_template('Products.html')
-
-@app.route('/student_toolkit')
-def student_toolkit():
-    return render_template('sc_html.html')
+    return render_template('products.html')
 
 @app.route('/cart')
 def cart():
@@ -82,42 +47,76 @@ def cart():
 
 @app.route('/orders')
 def orders():
-    return render_template('you.html')
+    return render_template('orders.html')
 
-@app.route('/buy', methods=['POST'])
-def buy():
+@app.route('/studenttoolkit')
+def student_toolkit():
+    return render_template('student_toolkit.html')
+
+# -------------------- AUTH --------------------
+@app.route('/login', methods=['POST'])
+def login():
+    phone = request.form['phone']
+    password = request.form['password']
+
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    c.execute("SELECT * FROM users WHERE phone=? AND password=?", (phone, password))
+    user = c.fetchone()
+    conn.close()
+
+    if user:
+        return redirect('/products')
+    else:
+        return "Invalid credentials", 401
+
+@app.route('/signup', methods=['POST'])
+def signup():
+    phone = request.form['phone']
+    password = request.form['password']
+
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    try:
+        c.execute("INSERT INTO users (phone, password) VALUES (?, ?)", (phone, password))
+        conn.commit()
+    except sqlite3.IntegrityError:
+        return "User already exists", 400
+    conn.close()
+
+    return redirect('/signin')
+
+# -------------------- ORDER API --------------------
+@app.route('/place_order', methods=['POST'])
+def place_order():
     data = request.get_json()
-    phone = data.get('phone')
-    product = data.get('product')
-    price = data.get('price')
-    if not phone or not product or not price:
-        return jsonify({'message': 'Missing data'}), 400
-    conn = get_db_connection()
-    cur = conn.cursor()
-    cur.execute("INSERT INTO orders (user_phone, product_name, price, timestamp) VALUES (?, ?, ?, ?)",
-                (phone, product, price, datetime.now().isoformat()))
+    phone = data['phone']
+    product = data['product']
+    size = data.get('size')
+    quantity = data.get('quantity', 1)
+
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    c.execute("INSERT INTO orders (user_phone, product, size, quantity) VALUES (?, ?, ?, ?)",
+              (phone, product, size, quantity))
     conn.commit()
     conn.close()
+
     return jsonify({'message': 'Order placed successfully'}), 200
 
-@app.route('/get_orders/<phone>', methods=['GET'])
-def get_orders(phone):
-    conn = get_db_connection()
-    cur = conn.cursor()
-    cur.execute("SELECT product_name, price, timestamp FROM orders WHERE user_phone = ?", (phone,))
-    rows = cur.fetchall()
-    conn.close()
-    return jsonify([dict(row) for row in rows])
+@app.route('/get_orders', methods=['GET'])
+def get_orders():
+    phone = request.args.get('phone')
 
-@app.route('/delete_orders/<phone>', methods=['DELETE'])
-def delete_orders(phone):
-    conn = get_db_connection()
-    cur = conn.cursor()
-    cur.execute("DELETE FROM orders WHERE user_phone = ?", (phone,))
-    conn.commit()
+    conn = sqlite3.connect('database.db')
+    c = conn.cursor()
+    c.execute("SELECT product, size, quantity, status FROM orders WHERE user_phone=?", (phone,))
+    orders = c.fetchall()
     conn.close()
-    return jsonify({'message': 'Orders deleted successfully'}), 200
 
+    order_list = [{'product': o[0], 'size': o[1], 'quantity': o[2], 'status': o[3]} for o in orders]
+    return jsonify(order_list)
+
+# -------------------- MAIN --------------------
 if __name__ == '__main__':
     app.run(debug=True)
-
