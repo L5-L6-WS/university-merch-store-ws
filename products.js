@@ -95,23 +95,6 @@ function closeModal() {
   const modal = document.querySelector("div > h3").parentElement;
   modal.style.display = "none";
 }
-
-// Handle form submission
-function handleOrder(e) {
-  e.preventDefault();
-
-  const name = document.querySelector("#name").value.trim();
-  const email = document.querySelector("#email").value.trim();
-  const address = document.querySelector("#address").value.trim();
-
-  if (!name || !email || !address) {
-    showModal("Please fill out all the fields.");
-    return;
-  }
-
-  if (cart.length === 0) {
-    showModal("Your cart is empty.");
-    return;
-  }
+}
 }
 
