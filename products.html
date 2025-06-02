@@ -9,8 +9,8 @@
 
   <!-- Navigation Bar -->
   <nav>
-    <div class="logo">Amity Merchandise</div>
-    <div class="nav-links">
+    <div>Amity Merchandise</div>
+    <div>
       <a href="homepage1.html">Home</a>
       <a href="Products1.html">Products</a>
       <a href="you1.html">Orders</a>
@@ -19,20 +19,90 @@
   </nav>
 
   <h1>Amity University Merchandise E-Store</h1>
-  <div class="grid" id="product-container"></div>
 
-  <!-- Custom Modal Alert -->
-  <div id="customAlert">
-    <div id="customAlertContent">
-      <p id="alertMessage"></p>
-      <button id="alertOkBtn">OK</button>
-    </div>
+  <!-- Product Grid -->
+  <h2>Available Products</h2>
+
+  <table border="1" cellpadding="10" cellspacing="0">
+    <tr>
+      <th>Product</th>
+      <th>Description</th>
+      <th>Price</th>
+      <th>Add to Cart</th>
+    </tr>
+    <tr>
+      <td>T-Shirt</td>
+      <td>Amity branded cotton t-shirt</td>
+      <td>₹499</td>
+      <td><button>Add to Cart</button></td>
+    </tr>
+    <tr>
+      <td>Mug</td>
+      <td>Ceramic mug with university logo</td>
+      <td>₹299</td>
+      <td><button>Add to Cart</button></td>
+    </tr>
+    <tr>
+      <td>Notebook</td>
+      <td>A5 spiral notebook with Amity cover</td>
+      <td>₹199</td>
+      <td><button>Add to Cart</button></td>
+    </tr>
+    <tr>
+      <td>Cap</td>
+      <td>Adjustable cap with logo embroidery</td>
+      <td>₹399</td>
+      <td><button>Add to Cart</button></td>
+    </tr>
+  </table>
+
+  <h2>Your Cart</h2>
+
+  <table border="1" cellpadding="10" cellspacing="0">
+    <tr>
+      <th>Item</th>
+      <th>Quantity</th>
+      <th>Price</th>
+    </tr>
+    <tr>
+      <td>No items in cart.</td>
+      <td>—</td>
+      <td>—</td>
+    </tr>
+  </table>
+
+  <h2>Order Summary</h2>
+  <p>Total Items: 0</p>
+  <p>Total Price: ₹0</p>
+
+  <h2>Place Order</h2>
+  <form>
+
+    <label for="email">Email:</label><br />
+    <input type="email" id="email" name="email" /><br /><br />
+
+    <label for="address">Address:</label><br />
+    <textarea id="address" name="address" rows="4" cols="40"></textarea><br /><br /
+    <label for="payment">Payment Method:</label><br />
+    <select id="payment" name="payment">
+      <option value="upi">UPI</option>
+      <option value="card">Debit/Credit Card</option>
+     <option value="cod">Cash on Delivery</option>
+    </select><br /><br />
+<input type="submit" value="Confirm Order" />
+  </form>
+  <h2>Customer Support</h2>
+  <p>For help, contact <a href="mailto:support@amityestore.com">support@amityestore.com</a></p>
+  <div>
+   <h3>Notice</h3>
+<p>This is a demo modal box. Please enable JavaScript to see real-time alerts.</p>
+    <button>Close</button>
   </div>
 
-  <script>
-    
-  </script>
+  <footer>
+    <hr />
+    <p>&copy; 2025 Amity University E-Store. All rights reserved.</p>
+  </footer>
 </body>
 </html>
-//comment comment
-//comments
+

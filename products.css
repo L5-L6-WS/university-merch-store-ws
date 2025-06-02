@@ -1,4 +1,5 @@
-    body {i
+
+    body {
 
       font-family: Arial, sans-serif;
       padding: 0;
@@ -93,6 +94,7 @@
 
     .product-details label,
     .product-details select,
+
     .product-details input[type="number"] {
       margin: 5px;
       font-size: 14px;
@@ -135,8 +137,7 @@
       border-radius: 10px;
       text-align: center;
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    }
-
+}
     #alertOkBtn {
       padding: 8px 16px;
       background-color: #1976d2;
@@ -146,3 +147,4 @@
       cursor: pointer;
     }
 //comments commencts
+
