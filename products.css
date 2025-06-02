@@ -144,3 +144,12 @@
       border-radius: 6px;
       cursor: pointer;
     }
+    #alert0kBtn{
+	    padding:8px 16px;
+	    background-color:#1976d2;
+	    color:white;
+	    border:none;
+	    border-radius: 6px;
+	    cursor: pointer;
+    }
+
