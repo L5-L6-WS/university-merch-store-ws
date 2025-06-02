@@ -1,13 +1,15 @@
+
     body {
+
       font-family: Arial, sans-serif;
       padding: 0;
       margin: 0;
-      background-color: #f9f9f9;
+      background-color: #6abce2;
     }
 
     nav {
       background-color: #232f3e;
-      color: white;
+      color: black;
       padding: 10px 20px;
       display: flex;
       justify-content: space-between;
@@ -21,7 +23,7 @@
     }
 
     nav .nav-links a {
-      color: white;
+      color: black;
       text-decoration: none;
       margin: 0 15px;
       font-size: 1rem;
@@ -92,6 +94,7 @@
 
     .product-details label,
     .product-details select,
+
     .product-details input[type="number"] {
       margin: 5px;
       font-size: 14px;
@@ -105,7 +108,7 @@
       padding: 6px 12px;
       margin: 5px;
       background-color: #1976d2;
-      color: white;
+      color: black;
       border: none;
       border-radius: 6px;
       cursor: pointer;
@@ -125,7 +128,7 @@
       background-color: rgba(0, 0, 0, 0.5);
       justify-content: center;
       align-items: center;
-      z-index: 9999;
+  
     }
 
     #customAlertContent {
@@ -134,12 +137,11 @@
       border-radius: 10px;
       text-align: center;
       box-shadow: 0 4px 12px rgba(0,0,0,0.2);
-    }
-
+}
     #alertOkBtn {
       padding: 8px 16px;
       background-color: #1976d2;
-      color: white;
+      color: black;
       border: none;
       border-radius: 6px;
       cursor: pointer;
@@ -152,4 +154,4 @@
 	    border-radius: 6px;
 	    cursor: pointer;
     }
-
+//comments commencts

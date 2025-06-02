@@ -1,75 +1,103 @@
-    const sizes = ['S', 'M', 'L', 'XL'];
-    const container = document.getElementById('product-container');
+// Cart array to hold items
+let cart = [];
 
-    products.forEach((productInfo, index) => {
-      const id = index + 1;
-      const product = document.createElement('div');
-      product.className = 'product';
+// Sample products for simplicity
+const products = [
+  { name: "T-Shirt", description: "Amity branded cotton t-shirt", price: 499 },
+  { name: "Mug", description: "Ceramic mug with university logo", price: 299 },
+  { name: "Notebook", description: "A5 spiral notebook", price: 199 },
+  { name: "Cap", description: "Cap with Amity logo", price: 399 },
+];
 
-      const img = document.createElement('img');
-      img.src = imageSources[index];
-      img.alt = productInfo.name;
-      img.onclick = () => {
-        const details = product.querySelector('.product-details');
-        details.style.display = details.style.display === 'none' ? 'block' : 'none';
-      };
+// Initialize when DOM is loaded
+window.onload = function () {
+  setupButtons();
+  renderCart();
+};
 
-      const title = document.createElement('h2');
-      title.textContent = productInfo.name;
+// Attach event listeners to "Add to Cart" buttons
+function setupButtons() {
+  const buttons = document.querySelectorAll("button");
+  buttons.forEach((button, index) => {
+    if (button.textContent === "Add to Cart") {
+      button.addEventListener("click", () => addToCart(index));
+    } else if (button.textContent === "Close") {
+      button.addEventListener("click", closeModal);
+    }
+  });
 
-      const price = document.createElement('div');
-      price.className = 'price';
-      price.textContent = `₹${productInfo.price}`;
+  const form = document.querySelector("form");
+  if (form) {
+    form.addEventListener("submit", handleOrder);
+  }
+}
 
-      const detailsDiv = document.createElement('div');
-      detailsDiv.className = 'product-details';
+// Add item to cart
+function addToCart(index) {
+  const product = products[index];
+  const existing = cart.find(item => item.name === product.name);
 
-      if (index < 6) {
-        const sizeLabel = document.createElement('label');
-        sizeLabel.textContent = 'Size: ';
-        const sizeSelect = document.createElement('select');
-        sizeSelect.id = `size${id}`;
-        sizes.forEach(size => {
-          const option = document.createElement('option');
-          option.value = size;
-          option.textContent = size;
-          sizeSelect.appendChild(option);
-        });
-        detailsDiv.appendChild(sizeLabel);
-        detailsDiv.appendChild(sizeSelect);
-      }
+  if (existing) {
+    existing.quantity += 1;
+  } else {
+    cart.push({ ...product, quantity: 1 });
+  }
 
-      const qtyLabel = document.createElement('label');
-      qtyLabel.textContent = 'Quantity: ';
-      const qtyInput = document.createElement('input');
-      qtyInput.type = 'number';
-      qtyInput.id = `quantity${id}`;
-      qtyInput.min = 1;
-      qtyInput.value = 1;
-      detailsDiv.appendChild(qtyLabel);
-      detailsDiv.appendChild(qtyInput);
+  showModal(`${product.name} added to cart.`);
+  renderCart();
+}
 
-      const actions = document.createElement('div');
-      actions.className = 'actions';
+// Render cart in table
+function renderCart() {
+  const cartTable = document.querySelectorAll("table")[1];
+  const totalItems = document.querySelector("p:nth-of-type(1)");
+  const totalPrice = document.querySelector("p:nth-of-type(2)");
 
-      const addToCartBtn = document.createElement('button');
-      addToCartBtn.textContent = 'Add to Cart';
-      addToCartBtn.onclick = () => handleAction('cart', id, productInfo.name, productInfo.price);
+  // Clear previous cart rows
+  const rows = cartTable.querySelectorAll("tr");
+  for (let i = 1; i < rows.length; i++) {
+    cartTable.deleteRow(1);
+  }
 
-      const buyNowBtn = document.createElement('button');
-      buyNowBtn.textContent = 'Buy Now';
-      buyNowBtn.onclick = () => handleAction('buy', id, productInfo.name, productInfo.price);
+  let total = 0;
+  let items = 0;
 
-      actions.appendChild(addToCartBtn);
-      actions.appendChild(buyNowBtn);
-      detailsDiv.appendChild(actions);
-
-      product.appendChild(img);
-      product.appendChild(title);
-      product.appendChild(price);
-      product.appendChild(detailsDiv);
-      container.appendChild(product);
+  if (cart.length === 0) {
+    const row = cartTable.insertRow();
+    row.insertCell(0).textContent = "No items in cart.";
+    row.insertCell(1).textContent = "—";
+    row.insertCell(2).textContent = "—";
+  } else {
+    cart.forEach(item => {
+      const row = cartTable.insertRow();
+      row.insertCell(0).textContent = item.name;
+      row.insertCell(1).textContent = item.quantity;
+      row.insertCell(2).textContent = "₹" + (item.price * item.quantity);
+      total += item.price * item.quantity;
+      items += item.quantity;
     });
+  }
+
+  totalItems.textContent = `Total Items: ${items}`;
+  totalPrice.textContent = `Total Price: ₹${total}`;
+}
+
+// Show modal message
+function showModal(message) {
+  const modal = document.querySelector("div > h3").parentElement;
+  const text = modal.querySelector("p");
+  text.textContent = message;
+  modal.style.display = "block";
+}
+
+// Close modal
+function closeModal() {
+  const modal = document.querySelector("div > h3").parentElement;
+  modal.style.display = "none";
+}
+}
+}
+
 
     const customAlert = document.getElementById('customAlert');
     const alertMessage = document.getElementById('alertMessage');
@@ -124,3 +152,4 @@
 
 
     }
+    
