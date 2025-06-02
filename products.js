@@ -98,3 +98,42 @@ function closeModal() {
 }
 }
 
+
+    const customAlert = document.getElementById('customAlert');
+    const alertMessage = document.getElementById('alertMessage');
+    const alertOkBtn = document.getElementById('alertOkBtn');
+    alertOkBtn.onclick = () => {
+      customAlert.style.display = 'none';
+    };
+
+    function handleAction(type, id, name, price) {
+      const qty = document.getElementById(`quantity${id}`).value;
+      const sizeElement = document.getElementById(`size${id}`);
+      const size = sizeElement ? sizeElement.value : null;
+
+      const product = { id, name, price, qty: parseInt(qty), size };
+
+      if (type === 'cart') {
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        const existingItemIndex = cart.findIndex(item => item.id === id && item.size === size);
+
+        if (existingItemIndex > -1) {
+          cart[existingItemIndex].qty += product.qty;
+        } else {
+          cart.push(product);
+        }
+
+        localStorage.setItem('cart', JSON.stringify(cart));
+        alert(`Added to Cart: ${name}, Quantity: ${qty}${size ? ", Size: " + size : ""}`);
+      }
+
+      if (type === 'buy') {
+        let orders = JSON.parse(localStorage.getItem('orders')) || [];
+        orders.push(product);
+        localStorage.setItem('orders', JSON.stringify(orders));
+
+        alertMessage.textContent = `Order placed: ${name}, Quantity: ${qty}${size ? ", Size: " + size : ""}`;
+        customAlert.style.display = 'flex';
+      }
+    }
+    
