@@ -107,4 +107,13 @@
         alertMessage.textContent = `Order placed: ${name}, Quantity: ${qty}${size ? ", Size: " + size : ""}`;
         customAlert.style.display = 'flex';
       }
+	       if (type === 'buy') {
+        let orders = JSON.parse(localStorage.getItem('orders')) || [];
+        orders.push(product);
+        localStorage.setItem('orders', JSON.stringify(orders));
+
+        alertMessage.textContent = `Order placed: ${name}, Quantity: ${qty}${size ? ", Size: " + size : ""}`;
+        customAlert.style.display = 'flex';
+      }
+
     }
